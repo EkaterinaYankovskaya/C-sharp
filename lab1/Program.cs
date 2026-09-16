@@ -8,9 +8,9 @@ namespace GeneticSearch
 {
     struct GeneticData
     {
-        public string protein;     
-        public string organism;    
-        public string amino_acids; 
+        public string protein;
+        public string organism;
+        public string amino_acids;
     }
 
     class Program
@@ -148,21 +148,31 @@ namespace GeneticSearch
 
         static void Main(string[] args)
         {
-            // Запрашиваем номер теста у пользователя
-            Console.Write("Введите номер теста (0, 1 или 2): ");
-            string testNum = Console.ReadLine()?.Trim();
+            Console.Write("Введите номер или полное имя файла sequences (напр. 0, 1 или sequences.0.txt): ");
+            string seqInput = Console.ReadLine()?.Trim() ?? "";
+            string seqFile = seqInput.EndsWith(".txt", StringComparison.OrdinalIgnoreCase)
+                ? seqInput
+                : $"sequences.{seqInput}.txt";
 
-            // Формируем имена файлов с учетом номера теста
-            string seqFile = $"sequences.{testNum}.txt";
-            string cmdFile = $"commands.{testNum}.txt";
-            string outFile = $"genedata.{testNum}.out.txt"; // сохраним результат с расширением .out.txt, чтобы не затереть эталонный genedata.X.txt
+            Console.Write("Введите номер или полное имя файла commands (напр. 0, 1 или commands.0.txt): ");
+            string cmdInput = Console.ReadLine()?.Trim() ?? "";
+            string cmdFile = cmdInput.EndsWith(".txt", StringComparison.OrdinalIgnoreCase)
+                ? cmdInput
+                : $"commands.{cmdInput}.txt";
 
-            if (!File.Exists(seqFile) || !File.Exists(cmdFile))
+            if (!File.Exists(seqFile))
             {
-                Console.WriteLine($"Ошибка: Файлы {seqFile} или {cmdFile} не найдены!");
-                Console.WriteLine("Убедитесь, что вы добавили их в проект и выставили 'Копировать более позднюю версию'.");
+                Console.WriteLine($"\nОшибка: Файл последовательностей '{seqFile}' не найден!");
                 return;
             }
+
+            if (!File.Exists(cmdFile))
+            {
+                Console.WriteLine($"\nОшибка: Файл команд '{cmdFile}' не найден!");
+                return;
+            }
+
+            string outFile = $"genedata.seq_{seqInput}.cmd_{cmdInput}.out.txt";
 
             List<GeneticData> database = new List<GeneticData>();
             string[] seqLines = File.ReadAllLines(seqFile);
@@ -217,8 +227,10 @@ namespace GeneticSearch
                 }
             }
 
-            Console.WriteLine($"\nТест {testNum} успешно выполнен!");
-            Console.WriteLine($"Результат записан в файл: {outFile}");
+            Console.WriteLine($"\nОбработка успешно завершена!");
+            Console.WriteLine($"Файл последовательностей: {seqFile}");
+            Console.WriteLine($"Файл команд:               {cmdFile}");
+            Console.WriteLine($"Результат сохранен в:      {outFile}");
         }
     }
 }
