@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CatAndMouse")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c2bf0af0394726a4b2056827540c6eeb48fda307")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d2fe5d3935f3d5027d9893ef4a045a07e990c4cd")]
 [assembly: System.Reflection.AssemblyProductAttribute("CatAndMouse")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CatAndMouse")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

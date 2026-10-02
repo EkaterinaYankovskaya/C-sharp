@@ -13,15 +13,15 @@ namespace CatAndMouseGame
 
     public class Player
     {
-        public string name;              
-        public int location;             
-        public State state = State.NotInGame; 
-        public int distanceTraveled = 0; 
+        public string name;
+        public int location;
+        public State state = State.NotInGame;
+        public int distanceTraveled = 0;
 
         public Player(string name)
         {
             this.name = name;
-            this.location = -1; // не в игре
+            this.location = -1;
         }
 
         public void Move(int steps, int boardSize)
@@ -39,27 +39,24 @@ namespace CatAndMouseGame
         }
     }
 
-    // Состояния игры
     public enum GameState
     {
         Start,
         End
     }
 
-    // Класс Game
     public class Game
     {
         public static string InputFile = "1.ChaseData.txt";
         public static string OutFile = "1.PursuitLog.txt";
 
-        public int size; // размер игрового поля
+        public int size;
         public Player cat;
         public Player mouse;
         public GameState state;
 
-        public Game(int size)
+        public Game()
         {
-            this.size = size;
             cat = new Player("Cat");
             mouse = new Player("Mouse");
             state = GameState.Start;
@@ -67,19 +64,32 @@ namespace CatAndMouseGame
 
         public void Run()
         {
-            if (!File.Exists(InputFile)) return;
-
-            string[] lines = File.ReadAllLines(InputFile);
-            if (lines.Length == 0) return;
-
-            // Если в первой строке указан размер поля N, переопределяем его
-            if (int.TryParse(lines[0].Trim(), out int parsedSize))
-                this.size = parsedSize;
-
-            // Подготовка шапки файла лога
             File.WriteAllText(OutFile, "Cat and Mouse\n\nCat   Mouse Distance\n-------------------\n");
 
-            // Читаем все команды из файла по очереди
+            if (!File.Exists(InputFile))
+            {
+                Console.WriteLine($"Ошибка: Файл {InputFile} не найден!");
+                File.AppendAllText(OutFile, $"\n[ERROR]: File {InputFile} not found!");
+                return;
+            }
+
+            string[] lines = File.ReadAllLines(InputFile);
+            if (lines.Length == 0)
+            {
+                Console.WriteLine($"Ошибка: Файл {InputFile} пуст!");
+                File.AppendAllText(OutFile, "\n[ERROR]: File is empty!");
+                return;
+            }
+
+            if (!int.TryParse(lines[0].Trim(), out int parsedSize) || parsedSize <= 0)
+            {
+                Console.WriteLine("\nОшибка: Первая строка файла должна содержать размер поля!");
+                File.AppendAllText(OutFile, "\n[ERROR]: Game failed — missing or invalid board size in the first line.");
+                return;
+            }
+
+            this.size = parsedSize;
+
             foreach (string line in lines)
             {
                 if (state == GameState.End) break;
@@ -93,7 +103,6 @@ namespace CatAndMouseGame
                 {
                     DoMoveCommand(command, steps);
 
-                    // Проверка поимки мыши
                     if (cat.state == State.Playing && mouse.state == State.Playing && cat.location == mouse.location)
                     {
                         cat.state = State.Winner;
@@ -109,7 +118,13 @@ namespace CatAndMouseGame
 
             state = GameState.End;
 
-            // Дописываем подвал и итоги в файл
+            if (cat.state == State.NotInGame || mouse.state == State.NotInGame)
+            {
+                Console.WriteLine("\nОшибка: Игра невозможна! В файле отсутствует информация об одном из игроков.");
+                File.AppendAllText(OutFile, "\n[ERROR]: Game failed — missing player position data.");
+                return;
+            }
+
             string footer = "-------------------\n\n\nDistance traveled: Mouse Cat\n" +
                            $" {mouse.distanceTraveled,-14} {cat.distanceTraveled}\n\n" +
                            (mouse.state == State.Looser ? $"Mouse caught at: {cat.location}\n" : "Mouse evaded Cat\n");
@@ -134,7 +149,6 @@ namespace CatAndMouseGame
             int dist = GetDistance();
             string distStr = (dist == -1) ? "??" : dist.ToString();
 
-            // Сразу дописываем новую строчку состояния в файл
             File.AppendAllText(OutFile, $" {catStr,-5} {mouseStr,-5} {distStr}\n");
         }
 
@@ -147,23 +161,25 @@ namespace CatAndMouseGame
         }
     }
 
-    // Клиентский класс
     class Program
     {
         static void Main(string[] args)
         {
-            Console.Write("Введите номер теста (1, 2 или 3): ");
+            Console.Write("Введите номер теста (1, 2, 3 или 4): ");
             string choice = Console.ReadLine()?.Trim();
 
-            if (choice != "1" && choice != "2" && choice != "3") choice = "1";
+            if (choice != "1" && choice != "2" && choice != "3" && choice != "4")
+            {
+                choice = "1";
+            }
 
             Game.InputFile = $"{choice}.ChaseData.txt";
             Game.OutFile = $"{choice}.PursuitLog.txt";
 
-            Game game = new Game(16);
+            Game game = new Game();
             game.Run();
 
-            Console.WriteLine($"Игра завершена. Результат сохранен в {Game.OutFile}");
+            Console.WriteLine($"Обработка завершена. Результаты сохранены в {Game.OutFile}");
         }
     }
 }

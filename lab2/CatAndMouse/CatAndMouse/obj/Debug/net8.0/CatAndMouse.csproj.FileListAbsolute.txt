@@ -19,3 +19,5 @@ C:\C#\C-sharp\lab2\CatAndMouse\CatAndMouse\bin\Debug\net8.0\2.ChaseData.txt
 C:\C#\C-sharp\lab2\CatAndMouse\CatAndMouse\bin\Debug\net8.0\2.PursuitLog.txt
 C:\C#\C-sharp\lab2\CatAndMouse\CatAndMouse\bin\Debug\net8.0\3.ChaseData.txt
 C:\C#\C-sharp\lab2\CatAndMouse\CatAndMouse\bin\Debug\net8.0\3.PursuitLog.txt
+C:\C#\C-sharp\lab2\CatAndMouse\CatAndMouse\bin\Debug\net8.0\4.ChaseData.txt
+C:\C#\C-sharp\lab2\CatAndMouse\CatAndMouse\bin\Debug\net8.0\4.PursuitLog.txt
