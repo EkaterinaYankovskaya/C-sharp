@@ -101,7 +101,8 @@ namespace CatAndMouseGame
 
                 if ((command == 'M' || command == 'C') && parts.Length > 1 && int.TryParse(parts[1], out int steps))
                 {
-                    DoMoveCommand(command, steps);
+                    if (command == 'M') mouse.Move(steps, size);
+                    else if (command == 'C') cat.Move(steps, size);
 
                     if (cat.state == State.Playing && mouse.state == State.Playing && cat.location == mouse.location)
                     {
@@ -130,15 +131,6 @@ namespace CatAndMouseGame
                            (mouse.state == State.Looser ? $"Mouse caught at: {cat.location}\n" : "Mouse evaded Cat\n");
 
             File.AppendAllText(OutFile, footer);
-        }
-
-        private void DoMoveCommand(char command, int steps)
-        {
-            switch (command)
-            {
-                case 'M': mouse.Move(steps, size); break;
-                case 'C': cat.Move(steps, size); break;
-            }
         }
 
         private void DoPrintCommand()
@@ -170,7 +162,8 @@ namespace CatAndMouseGame
 
             if (choice != "1" && choice != "2" && choice != "3" && choice != "4")
             {
-                choice = "1";
+                Console.WriteLine("\nОшибка: Введён неверный номер теста! Допустимые значения: 1, 2, 3 или 4.");
+                return;
             }
 
             Game.InputFile = $"{choice}.ChaseData.txt";
