@@ -1,16 +1,15 @@
 ﻿using System.Xml.Serialization;
 
-namespace TextAnalyzerApp
+namespace TextAnalyzerApp.models
 {
-    [XmlRoot("word")]
-    public class Word
+    public class Punctuation
     {
         [XmlText]
         public string Value { get; set; }
 
-        public Word() { }
+        public Punctuation() { }
 
-        public Word(string value)
+        public Punctuation(string value)
         {
             Value = value;
         }

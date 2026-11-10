@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace TextAnalyzerApp
+namespace TextAnalyzerApp.models
 {
     [XmlRoot("word")]
     public class Word

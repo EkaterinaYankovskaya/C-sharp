@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<text xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <sentence>
+    <word>погода</word>
+    <word>завтра</word>
+  </sentence>
+  <sentence>
+    <word>лежала</word>
+    <word>интересная</word>
+    <word>программированию</word>
+  </sentence>
+  <sentence>
+    <word>Студенты</word>
+    <word>успешно</word>
+    <word>экзамены</word>
+  </sentence>
+  <sentence>
+    <word>находится</word>
+    <word>ближайший</word>
+    <word>магазин</word>
+  </sentence>
+  <sentence>
+    <word>programmer</word>
+    <word>writes</word>
+    <word>code</word>
+    <word>single</word>
+  </sentence>
+</text>

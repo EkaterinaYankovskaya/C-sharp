@@ -1,60 +1,160 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
+using System.Collections.Generic;
+using TextModel = TextAnalyzerApp.models.Text;
+using TextAnalyzerApp.models;
 
 namespace TextAnalyzerApp
 {
-    class Program
+    public static class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            Console.OutputEncoding = Encoding.UTF8;
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
 
-            var stopWords = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            if (File.Exists("stopwords_en.txt"))
+            try
             {
-                foreach (var line in File.ReadAllLines("stopwords_en.txt", Encoding.UTF8))
+                string inputPath = "input.txt";
+
+                // Если файла нет, метод ParseFile выбросит FileNotFoundException, 
+                // которая перехватится блоком catch внизу и покажет красивую ошибку
+                var text = TextModel.ParseFile(inputPath);
+                Console.WriteLine($"Успешно загружено и распарсено предложений из файла: {text.Sentences.Count}\n");
+
+                while (true)
                 {
-                    if (!string.IsNullOrWhiteSpace(line)) stopWords.Add(line.Trim());
+                    PrintMenu();
+                    Console.Write("Выберите действие (0-8): ");
+                    var choice = Console.ReadLine()?.Trim();
+                    Console.WriteLine();
+
+                    if (choice is null or "0")
+                        break;
+
+                    Execute(choice, text);
+                    Console.WriteLine("\n--------------------------------------------------\n");
                 }
             }
-            if (File.Exists("stopwords_ru.txt"))
+            catch (Exception exception)
             {
-                foreach (var line in File.ReadAllLines("stopwords_ru.txt", Encoding.UTF8))
-                {
-                    if (!string.IsNullOrWhiteSpace(line)) stopWords.Add(line.Trim());
-                }
+                PrintError(exception.Message);
             }
 
-            string sampleText = "Mary had a little lamb. Aesop and? Is this a test sentence?";
-            var (text, rawSentences) = TextParser.ParseContent(sampleText);
-
-            Console.WriteLine("--- 1. По возрастанию количества слов ---");
-            foreach (var s in text.GetSentencesSortedByWordCount())
-            {
-                Console.WriteLine($"[{s.GetWordCount()} слов]: {s}");
-            }
-
-            Console.WriteLine("\n--- 2. По возрастанию длины предложения ---");
-            foreach (var s in text.GetSentencesSortedByLength())
-            {
-                Console.WriteLine($"[{s.ToString().Length} символов]: {s}");
-            }
-
-            Console.WriteLine("\n--- 3. Слова длины 4 в вопросительных предложениях ---");
-            var foundWords = text.FindWordsInInterrogativeSentences(4, rawSentences);
-            foreach (var w in foundWords)
-            {
-                Console.WriteLine(w);
-            }
-
-            text.RemoveWordsStartingWithConsonant(3);
-            text.ReplaceWordsInSentence(0, 4, "REPLACED");
-            text.RemoveStopWords(stopWords);
-
-            text.ToXml("output_text.xml");
-            Console.WriteLine("\n--- Текст успешно экспортирован в output_text.xml ---");
+            Console.WriteLine("Программа завершена.");
         }
+
+        private static void Execute(string choice, TextModel text)
+        {
+            switch (choice)
+            {
+                case "1": // Пункт 1
+                    Console.WriteLine("--- Предложения по возрастанию количества слов ---");
+                    PrintSentences(text.GetSentencesSortedByWordCount());
+                    break;
+
+                case "2": // Пункт 2
+                    Console.WriteLine("--- Предложения по возрастанию длины ---");
+                    PrintSentences(text.GetSentencesSortedByLength());
+                    break;
+
+                case "3": // Пункт 3
+                    var len = ReadPositiveInt("Введите длину слова для поиска в вопросах: ");
+                    var words = text.FindWordsInInterrogativeSentences(len);
+                    Console.WriteLine(words.Count == 0 ? "Слова не найдены." : $"Найдены уникальные слова: {string.Join(", ", words)}");
+                    break;
+
+                case "4": // Пункт 4
+                    var consLen = ReadPositiveInt("Введите длину слова для удаления (начинающиеся с согласной): ");
+                    int removedCons = text.RemoveWordsStartingWithConsonant(consLen);
+                    Console.WriteLine($"Удалено слов: {removedCons}");
+                    Console.WriteLine($"Обновленный текст:\n{text}");
+                    break;
+
+                case "5": // Пункт 5
+                    if (text.Sentences.Count == 0) { Console.WriteLine("Нет предложений."); break; }
+                    int sNum = ReadIntInRange($"Номер предложения (1-{text.Sentences.Count}): ", 1, text.Sentences.Count);
+                    int rLen = ReadPositiveInt("Длина заменяемого слова: ");
+                    Console.Write("Новая подстрока: ");
+                    string repl = Console.ReadLine() ?? string.Empty;
+                    int replaced = text.ReplaceWordsInSentence(sNum - 1, rLen, repl);
+                    Console.WriteLine($"Заменено слов: {replaced}");
+                    Console.WriteLine($"Измененное предложение:\n{text.Sentences[sNum - 1]}");
+                    break;
+
+                case "6": // Пункт 6
+                    var stopWords = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                    if (File.Exists("stopwords_en.txt"))
+                        foreach (var l in File.ReadLines("stopwords_en.txt", System.Text.Encoding.UTF8))
+                            if (!string.IsNullOrWhiteSpace(l)) stopWords.Add(l.Trim());
+
+                    if (File.Exists("stopwords_ru.txt"))
+                        foreach (var l in File.ReadLines("stopwords_ru.txt", System.Text.Encoding.UTF8))
+                            if (!string.IsNullOrWhiteSpace(l)) stopWords.Add(l.Trim());
+
+                    int removedStops = text.RemoveStopWords(stopWords);
+                    Console.WriteLine($"Удалено стоп-слов: {removedStops}");
+                    Console.WriteLine($"Текст без стоп-слов:\n{text}");
+                    break;
+
+                case "7": // Пункт 7
+                    Console.Write("Путь для сохранения XML (по умолчанию text.xml): ");
+                    string xmlPath = Console.ReadLine();
+                    if (string.IsNullOrWhiteSpace(xmlPath)) xmlPath = "text.xml";
+                    text.ToXml(xmlPath);
+                    Console.WriteLine($"Текст успешно экспортирован в: {Path.GetFullPath(xmlPath)}");
+                    break;
+
+                case "8":
+                    Console.WriteLine($"Текущий текст:\n{text}");
+                    break;
+
+                default:
+                    Console.WriteLine("Неизвестный пункт меню.");
+                    break;
+            }
+        }
+
+        private static void PrintMenu()
+        {
+            Console.WriteLine("=== МЕНЮ АНАЛИЗА ТЕКСТА ===");
+            Console.WriteLine("1. Вывести предложения по возрастанию количества слов");
+            Console.WriteLine("2. Вывести предложения по возрастанию длины");
+            Console.WriteLine("3. Найти слова заданной длины в вопросительных предложениях");
+            Console.WriteLine("4. Удалить слова заданной длины, начинающиеся с согласной");
+            Console.WriteLine("5. Заменить слова в выбранном предложении");
+            Console.WriteLine("6. Удалить стоп-слова (из файлов ru/en)");
+            Console.WriteLine("7. Экспортировать текст в XML");
+            Console.WriteLine("8. Показать текущий текст");
+            Console.WriteLine("0. Выход");
+        }
+
+        private static int ReadPositiveInt(string prompt)
+        {
+            while (true)
+            {
+                Console.Write(prompt);
+                if (int.TryParse(Console.ReadLine(), out var value) && value > 0) return value;
+                Console.WriteLine("Ошибка. Введите положительное целое число.");
+            }
+        }
+
+        private static int ReadIntInRange(string prompt, int min, int max)
+        {
+            while (true)
+            {
+                Console.Write(prompt);
+                if (int.TryParse(Console.ReadLine(), out var value) && value >= min && value <= max) return value;
+                Console.WriteLine($"Ошибка. Введите число от {min} до {max}.");
+            }
+        }
+
+        private static void PrintSentences(IEnumerable<Sentence> sentences)
+        {
+            int i = 1;
+            foreach (var s in sentences)
+                Console.WriteLine($"{i++}. {s} (слов: {s.GetWordCount()})");
+        }
+
+        private static void PrintError(string message) => Console.Error.WriteLine($"Ошибка: {message}");
     }
 }
