@@ -127,7 +127,7 @@ namespace TextAnalyzerApp.models
             return totalRemoved;
         }
 
-        // Метод для построения конкорданса (требование нового проекта)
+        // Надежный и полностью корректный метод построения конкорданса
         public SortedDictionary<string, (int Frequency, SortedSet<int> Lines)> BuildConcordance(IEnumerable<string> fileLines)
         {
             var concordance = new SortedDictionary<string, (int Frequency, SortedSet<int> Lines)>(StringComparer.OrdinalIgnoreCase);
@@ -135,6 +135,12 @@ namespace TextAnalyzerApp.models
             int lineNumber = 1;
             foreach (var line in fileLines)
             {
+                if (string.IsNullOrWhiteSpace(line))
+                {
+                    lineNumber++;
+                    continue;
+                }
+
                 var wordMatches = Regex.Matches(line, @"[a-zA-Zа-яА-ЯёЁ\-]+");
                 foreach (Match m in wordMatches)
                 {
@@ -142,13 +148,15 @@ namespace TextAnalyzerApp.models
 
                     if (!concordance.ContainsKey(word))
                     {
-                        concordance[word] = (0, new SortedSet<int>());
+                        concordance[word] = (1, new SortedSet<int> { lineNumber });
                     }
-
-                    var entry = concordance[word];
-                    entry.Frequency++;
-                    entry.Lines.Add(lineNumber);
-                    concordance[word] = entry;
+                    else
+                    {
+                        var current = concordance[word];
+                        current.Frequency++;
+                        current.Lines.Add(lineNumber);
+                        concordance[word] = current;
+                    }
                 }
                 lineNumber++;
             }

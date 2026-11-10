@@ -106,7 +106,7 @@ namespace TextAnalyzerApp
                     Console.WriteLine($"Текущий текст:\n{text}");
                     break;
 
-                case "9": // Конкорданс текста (Новое требование)[cite: 14]
+                case "9": // Конкорданс текста (классический формат: слово...частота: номера строк)
                     Console.WriteLine("--- Конкорданс текста ---");
                     var fileLines = File.ReadLines(inputPath, System.Text.Encoding.UTF8);
                     var concordance = text.BuildConcordance(fileLines);

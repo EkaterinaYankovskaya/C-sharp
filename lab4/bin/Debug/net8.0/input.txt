@@ -1,1 +1,10 @@
-Какая погода будет завтра утром? На столе лежала интересная книга по программированию. Студенты успешно сдали все экзамены! Где находится ближайший магазин? A programmer writes clean code every single day.
+Сколько времени потребуется на выполнение всех лабораторных работ по программированию?
+Студенты активно изучают структуры данных и алгоритмы сортировки.
+Какая сложная задача ждет нас на экзамене завтра утром?
+A programmer writes clean code every single day to solve complex business problems.
+Clean code is essential for maintaining large software projects over time.
+Кто написал эту замечательную книгу по объектно-ориентированному проектированию?
+Java и C# являются мощными языками программирования для разработки бэкенда.
+Every developer should test their code thoroughly before deploying it to production.
+Успешно сдать сессию — главная цель каждого усердного студента!
+Is clean code the ultimate goal for every single software engineer?

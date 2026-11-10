@@ -1,28 +1,123 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <text xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <sentence>
-    <word>погода</word>
-    <word>завтра</word>
-  </sentence>
-  <sentence>
-    <word>лежала</word>
-    <word>интересная</word>
+    <word>Сколько</word>
+    <word>времени</word>
+    <word>потребуется</word>
+    <word>на</word>
+    <word>выполнение</word>
+    <word>всех</word>
+    <word>лабораторных</word>
+    <word>работ</word>
+    <word>по</word>
     <word>программированию</word>
   </sentence>
   <sentence>
     <word>Студенты</word>
-    <word>успешно</word>
-    <word>экзамены</word>
+    <word>активно</word>
+    <word>изучают</word>
+    <word>структуры</word>
+    <word>данных</word>
+    <word>и</word>
+    <word>алгоритмы</word>
+    <word>сортировки</word>
   </sentence>
   <sentence>
-    <word>находится</word>
-    <word>ближайший</word>
-    <word>магазин</word>
+    <word>Какая</word>
+    <word>сложная</word>
+    <word>задача</word>
+    <word>ждет</word>
+    <word>нас</word>
+    <word>на</word>
+    <word>экзамене</word>
+    <word>завтра</word>
+    <word>утром</word>
   </sentence>
   <sentence>
+    <word>A</word>
     <word>programmer</word>
     <word>writes</word>
+    <word>clean</word>
     <word>code</word>
+    <word>every</word>
     <word>single</word>
+    <word>day</word>
+    <word>to</word>
+    <word>solve</word>
+    <word>complex</word>
+    <word>business</word>
+    <word>problems</word>
+  </sentence>
+  <sentence>
+    <word>Clean</word>
+    <word>code</word>
+    <word>is</word>
+    <word>essential</word>
+    <word>for</word>
+    <word>maintaining</word>
+    <word>large</word>
+    <word>software</word>
+    <word>projects</word>
+    <word>over</word>
+    <word>time</word>
+  </sentence>
+  <sentence>
+    <word>Кто</word>
+    <word>написал</word>
+    <word>эту</word>
+    <word>замечательную</word>
+    <word>книгу</word>
+    <word>по</word>
+    <word>объектно-ориентированному</word>
+    <word>проектированию</word>
+  </sentence>
+  <sentence>
+    <word>Java</word>
+    <word>и</word>
+    <word>C</word>
+    <word>являются</word>
+    <word>мощными</word>
+    <word>языками</word>
+    <word>программирования</word>
+    <word>для</word>
+    <word>разработки</word>
+    <word>бэкенда</word>
+  </sentence>
+  <sentence>
+    <word>Every</word>
+    <word>developer</word>
+    <word>should</word>
+    <word>test</word>
+    <word>their</word>
+    <word>code</word>
+    <word>thoroughly</word>
+    <word>before</word>
+    <word>deploying</word>
+    <word>it</word>
+    <word>to</word>
+    <word>production</word>
+  </sentence>
+  <sentence>
+    <word>Успешно</word>
+    <word>сдать</word>
+    <word>сессию</word>
+    <word>главная</word>
+    <word>цель</word>
+    <word>каждого</word>
+    <word>усердного</word>
+    <word>студента</word>
+  </sentence>
+  <sentence>
+    <word>Is</word>
+    <word>clean</word>
+    <word>code</word>
+    <word>the</word>
+    <word>ultimate</word>
+    <word>goal</word>
+    <word>for</word>
+    <word>every</word>
+    <word>single</word>
+    <word>software</word>
+    <word>engineer</word>
   </sentence>
 </text>
