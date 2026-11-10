@@ -16,22 +16,20 @@ namespace TextAnalyzerApp
             {
                 string inputPath = "input.txt";
 
-                // Если файла нет, метод ParseFile выбросит FileNotFoundException, 
-                // которая перехватится блоком catch внизу и покажет красивую ошибку
                 var text = TextModel.ParseFile(inputPath);
                 Console.WriteLine($"Успешно загружено и распарсено предложений из файла: {text.Sentences.Count}\n");
 
                 while (true)
                 {
                     PrintMenu();
-                    Console.Write("Выберите действие (0-8): ");
+                    Console.Write("Выберите действие (0-9): ");
                     var choice = Console.ReadLine()?.Trim();
                     Console.WriteLine();
 
                     if (choice is null or "0")
                         break;
 
-                    Execute(choice, text);
+                    Execute(choice, text, inputPath);
                     Console.WriteLine("\n--------------------------------------------------\n");
                 }
             }
@@ -43,34 +41,34 @@ namespace TextAnalyzerApp
             Console.WriteLine("Программа завершена.");
         }
 
-        private static void Execute(string choice, TextModel text)
+        private static void Execute(string choice, TextModel text, string inputPath)
         {
             switch (choice)
             {
-                case "1": // Пункт 1
+                case "1":
                     Console.WriteLine("--- Предложения по возрастанию количества слов ---");
                     PrintSentences(text.GetSentencesSortedByWordCount());
                     break;
 
-                case "2": // Пункт 2
+                case "2":
                     Console.WriteLine("--- Предложения по возрастанию длины ---");
                     PrintSentences(text.GetSentencesSortedByLength());
                     break;
 
-                case "3": // Пункт 3
+                case "3":
                     var len = ReadPositiveInt("Введите длину слова для поиска в вопросах: ");
                     var words = text.FindWordsInInterrogativeSentences(len);
                     Console.WriteLine(words.Count == 0 ? "Слова не найдены." : $"Найдены уникальные слова: {string.Join(", ", words)}");
                     break;
 
-                case "4": // Пункт 4
+                case "4":
                     var consLen = ReadPositiveInt("Введите длину слова для удаления (начинающиеся с согласной): ");
                     int removedCons = text.RemoveWordsStartingWithConsonant(consLen);
                     Console.WriteLine($"Удалено слов: {removedCons}");
                     Console.WriteLine($"Обновленный текст:\n{text}");
                     break;
 
-                case "5": // Пункт 5
+                case "5":
                     if (text.Sentences.Count == 0) { Console.WriteLine("Нет предложений."); break; }
                     int sNum = ReadIntInRange($"Номер предложения (1-{text.Sentences.Count}): ", 1, text.Sentences.Count);
                     int rLen = ReadPositiveInt("Длина заменяемого слова: ");
@@ -81,7 +79,7 @@ namespace TextAnalyzerApp
                     Console.WriteLine($"Измененное предложение:\n{text.Sentences[sNum - 1]}");
                     break;
 
-                case "6": // Пункт 6
+                case "6":
                     var stopWords = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                     if (File.Exists("stopwords_en.txt"))
                         foreach (var l in File.ReadLines("stopwords_en.txt", System.Text.Encoding.UTF8))
@@ -96,7 +94,7 @@ namespace TextAnalyzerApp
                     Console.WriteLine($"Текст без стоп-слов:\n{text}");
                     break;
 
-                case "7": // Пункт 7
+                case "7":
                     Console.Write("Путь для сохранения XML (по умолчанию text.xml): ");
                     string xmlPath = Console.ReadLine();
                     if (string.IsNullOrWhiteSpace(xmlPath)) xmlPath = "text.xml";
@@ -106,6 +104,19 @@ namespace TextAnalyzerApp
 
                 case "8":
                     Console.WriteLine($"Текущий текст:\n{text}");
+                    break;
+
+                case "9": // Конкорданс текста (Новое требование)[cite: 14]
+                    Console.WriteLine("--- Конкорданс текста ---");
+                    var fileLines = File.ReadLines(inputPath, System.Text.Encoding.UTF8);
+                    var concordance = text.BuildConcordance(fileLines);
+
+                    foreach (var pair in concordance)
+                    {
+                        string wordDots = pair.Key.PadRight(30, '.');
+                        string linesStr = string.Join(" ", pair.Value.Lines);
+                        Console.WriteLine($"{wordDots}{pair.Value.Frequency}: {linesStr}");
+                    }
                     break;
 
                 default:
@@ -125,6 +136,7 @@ namespace TextAnalyzerApp
             Console.WriteLine("6. Удалить стоп-слова (из файлов ru/en)");
             Console.WriteLine("7. Экспортировать текст в XML");
             Console.WriteLine("8. Показать текущий текст");
+            Console.WriteLine("9. Построить конкорданс текста");
             Console.WriteLine("0. Выход");
         }
 
